@@ -1,0 +1,6 @@
+# Ignore imagebuilder directories, downloads, and checksums
+openwrt-imagebuilder*
+sha256sums*
+
+# Exernal storage image file used for emulation
+extradrive.img

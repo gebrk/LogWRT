@@ -1,0 +1,43 @@
+#!/bin/bash
+# Use bash shell for root
+chsh -s /bin/bash
+
+# System settings
+uci set system.@system[0].ttylogin=1
+uci set system.@system[0].hostname='logbox'
+uci set system.ntp.server='localtime.bsrsites.uk'
+uci commit system
+/etc/init.d/sysntpd restart
+
+# Enable irqbalance
+uci set irqbalance.irqbalance.enabled=1
+uci commit irqbalance
+/etc/init.d/irqbalance restart
+
+# Rip out and rebuild default network
+uci del network.lan
+uci del network.wan
+uci del network.@device[0]
+uci set network.lan=interface
+uci set network.lan.device=eth0
+uci set network.lan.proto=dhcp
+
+# Default firewall configured in static file.
+
+# Setup external storage
+# Remove existing config first
+while uci -q delete fstab.@mount[0]; do :; done
+uci add fstab mount
+uci set fstab.@mount[-1]=mount
+uci set fstab.@mount[-1].target='/mnt/logstore'
+uci set fstab.@mount[-1].label='logstore'
+uci set fstab.@mount[-1].enabled=1
+uci commit fstab
+block mount
+
+# Ensure dedicated group and user exist for flow logger
+id -u nfdump &>/dev/null || useradd -r -s /bin/false -d /mnt/logstore/flowdata -M nfdump
+# Setup nfcapd
+uci set nfcapd.nfcapd.logdir='NOT USED'
+uci set nfcapd.nfcapd.enabled=1
+/etc/init.d/lw_nfcapd restart
