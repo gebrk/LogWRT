@@ -40,4 +40,10 @@ id -u nfdump &>/dev/null || useradd -r -s /bin/false -d /mnt/logstore/flowdata -
 # Setup nfcapd
 uci set nfcapd.nfcapd.logdir='NOT USED'
 uci set nfcapd.nfcapd.enabled=1
+uci set nfcapd.nfexpire=nfexpire
+# Suffixes - (w)eeks (d)ays (H)ours 0 to disable
+uci set nfcapd.nfexpire.max_age=12w
+# Suffixes - K KB M MB G GB T TB 0 to disable
+uci set nfcapd.nfexpire.max_space=500M
+uci commit nfcapd
 /etc/init.d/lw_nfcapd restart
