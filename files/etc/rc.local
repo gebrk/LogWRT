@@ -4,11 +4,6 @@
 # Make sure logging directories exist, bail if no external storage
 if findmnt /mnt/logstore; then
     mkdir -p /mnt/logstore/logs
-    if ! test -d /mnt/logstore/flowdata; then
-        mkdir -p /mnt/logstore/flowdata
-        chown nfdump:nfdump /mnt/logstore/flowdata
-        /etc/init.d/lw_nfdump restart
-    fi
 fi
 
 exit 0
