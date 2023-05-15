@@ -1,9 +1,0 @@
-# Put your custom commands here that should be executed once
-# the system init finished. By default this file does nothing.
-
-# Make sure logging directories exist, bail if no external storage
-if findmnt /mnt/logstore; then
-    mkdir -p /mnt/logstore/logs
-fi
-
-exit 0

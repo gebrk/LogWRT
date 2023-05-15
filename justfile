@@ -24,9 +24,10 @@ packages := """
     block-mount \
     mount-utils \
     nfdump \
+    rsyslog \
     """
-# We use a custom init script for nfcapd
-disabled_services := "nfcapd"
+# We use a custom init script for nfcapd and rsyslog and do some juggling on firstboot
+disabled_services := "nfcapd lw_nfcapd rsyslog lw_rsyslog"
 
 # completely build a fresh image from download to grabbing the sysupgrade
 fullbuild: fetch extract buildimage grabupgrade checksum

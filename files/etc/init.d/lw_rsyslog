@@ -1,0 +1,27 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2014 OpenWrt.org
+#
+# Rsyslogd init script tweaked for LogWRT
+# Key changes:
+#  * Support running as rsyslog user
+#  * Check for storage availability
+#  * Create dir if needed
+
+START=60
+
+USE_PROCD=1
+logmount=/mnt/logstore/
+logdir=/mnt/logstore/logs
+
+start_service() {
+        findmnt "$logmount" > /dev/null || {
+                echo "external storage not mounted"
+                return 100
+        }
+        mkdir -p "$logdir"
+        chown rsyslog:rsyslog "$logdir"
+
+        procd_open_instance
+        procd_set_param command /usr/sbin/rsyslogd -n
+        procd_close_instance
+}

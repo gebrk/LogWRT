@@ -35,6 +35,15 @@ uci set fstab.@mount[-1].enabled=1
 uci commit fstab
 block mount
 
+# Swap in custom init files, keeping shipped versions for reference
+# Make reference version non-executable
+mv /etc/init.d/nfcapd /etc/init.d/nfcapd.orig
+chmod -x /etc/init.d/nfcapd.orig
+mv /etc/init.d/lw_nfcapd /etc/init.d/nfcapd
+mv /etc/init.d/rsyslog /etc/init.d/rsyslog.orig
+chmod -x /etc/init.d/rsyslog.orig
+mv /etc/init.d/lw_rsyslog /etc/init.d/rsyslog
+
 # Ensure dedicated group and user exist for flow logger
 id -u nfdump &>/dev/null || useradd -r -s /bin/false -d /mnt/logstore/flowdata -M nfdump
 # Setup nfcapd
@@ -46,4 +55,17 @@ uci set nfcapd.nfexpire.max_age=12w
 # Suffixes - K KB M MB G GB T TB 0 to disable
 uci set nfcapd.nfexpire.max_space=500M
 uci commit nfcapd
-/etc/init.d/lw_nfcapd restart
+/etc/init.d/nfcapd enable
+/etc/init.d/nfcapd start
+
+# Add dedicated user and group for rsyslog
+id -u rsyslog &>/dev/null || useradd -r -s /bin/false -d /mnt/logstore/logs -M rsyslog
+# Rsyslog is disabled by default to allow firstboot setup like user adding to complete.
+/etc/init.d/rsyslog enable
+/etc/init.d/rsyslog start
+sleep 5 # try to avoid "(none)" logs
+# Use rsyslog for local logs in addition to builtin logger
+uci set system.@system[0].log_ip="127.0.0.1"
+uci set system.@system[0].log_proto="udp"
+uci commit system
+/etc/init.d/log restart
