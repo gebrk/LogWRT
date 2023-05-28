@@ -25,3 +25,7 @@ start_service() {
         procd_set_param command /usr/sbin/rsyslogd -n
         procd_close_instance
 }
+
+reload_service() {
+         procd_send_signal rsyslog * HUP
+}

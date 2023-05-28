@@ -25,6 +25,7 @@ packages := """
     mount-utils \
     nfdump \
     rsyslog \
+    logrotate \
     """
 # We use a custom init script for nfcapd and rsyslog and do some juggling on firstboot
 disabled_services := "nfcapd lw_nfcapd rsyslog lw_rsyslog"
