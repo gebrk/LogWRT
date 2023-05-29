@@ -4,6 +4,7 @@ TARGET := "x86"
 BOARD := "64"
 PROFILE := "generic"
 imagebuilder := "openwrt-imagebuilder-"+openwrt_version+"-"+TARGET+"-"+BOARD+".Linux-x86_64"
+downloadbase := "https://downloads.openwrt.org/releases/"+openwrt_version+"/targets/"+TARGET+"/"+BOARD
 builddir := "builds/"+openwrt_version+"/"
 filedir := "files"
 extra_name := "logwrt"
@@ -64,8 +65,8 @@ fetch:
     # Skip if imagebuilder download present
     test -f {{imagebuilder}}.tar.xz && echo "Imagebuilder download exists, delete or run just clean  to redownload." && exit 0
 
-    curl -O https://downloads.openwrt.org/releases/{{openwrt_version}}/targets/{{TARGET}}/{{BOARD}}/{{imagebuilder}}.tar.xz
-    curl --remote-name-all https://downloads.openwrt.org/releases/{{openwrt_version}}/targets/{{TARGET}}/{{BOARD}}/sha256sums{,.sig}
+    curl -Of {{downloadbase}}/{{imagebuilder}}.tar.xz
+    curl -f --remote-name-all {{downloadbase}}/sha256sums{,.sig}
 
 # check the downloaded files with signify and sha256sums
 verify: fetch
