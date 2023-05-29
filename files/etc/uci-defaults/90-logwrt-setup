@@ -5,10 +5,8 @@ chsh -s /bin/bash
 # System settings
 uci set system.@system[0].ttylogin=1
 uci set system.@system[0].hostname='logbox'
-uci set system.ntp.server='localtime.bsrsites.uk'
 uci commit system
 /etc/init.d/system restart
-/etc/init.d/sysntpd restart
 
 # Enable irqbalance
 uci set irqbalance.irqbalance.enabled=1
