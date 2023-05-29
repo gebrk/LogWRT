@@ -22,6 +22,7 @@ packages := """
     bash \
     shadow \
     lsblk \
+    procps-ng-watch \
     block-mount \
     mount-utils \
     nfdump \
