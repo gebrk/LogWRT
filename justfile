@@ -77,9 +77,6 @@ buildfor FOR *commands:
         exit 1
     fi
 
-# completely build a fresh image from download to grabbing the sysupgrade
-fullbuild: fetch extract buildimage grabupgrade checksum
-
 # remove all imagebuilder folders and downloads
 cleanall:
     rm -rf openwrt-imagebuilder* sha256sums*
@@ -122,23 +119,6 @@ buildimage:
 manifest:
     cd {{imagebuilder}} && \
     make manifest PROFILE="{{PROFILE}}" PACKAGES="{{packages}}"
-
-# TODO: make grabimage use the defined output directories
-
-grabimage type:
-    cp {{imagebuilder}}/bin/targets/{{TARGET}}/{{BOARD}}/openwrt-{{openwrt_version}}-{{extra_name}}-{{TARGET}}-{{BOARD}}-{{PROFILE}}-{{type}}.img.gz .
-
-# copy the sysupgrade image to the top level, overwriting if needed
-grabupgrade:
-    @just grabimage ext4-sysupgrade
-
-# copy the factory image to the top level, overwriting if needed
-grabfactory:
-    @just grabimage ext4-factory
-
-# print the checksum of built images
-checksum:
-    md5sum openwrt-{{openwrt_version}}-{{extra_name}}-{{TARGET}}-{{BOARD}}*.img.gz
 
 # launch qmeu in nographic mode with a fresh copy of the rootfs
 emulate: mkextradrive
