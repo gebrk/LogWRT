@@ -35,16 +35,49 @@ LogWRT appliance image.
 The default is to build for x86_64, but by overriding the default target, board,
 and profile images can be built for other architectures. The x86_64 image can be
 emulated in qemu for testing, this is not supported for other arches.
+
+Using the buildfor recipe, any supported recipe can be run for any supported board.
+e.g. just buildfor rpi-4 buildimage to build an image for rpi-4.
+Supported boards:
+ * x86_64 (redundant since this is the main default)
+ * rpi-4 (including CM4)
+ * rpi-3 (all varients)
+ * rpi-2
+ * rpi (original Pi plus Zero and Zero W)
 """
 # We use a custom init script for nfcapd and rsyslog and do some juggling on firstboot
 disabled_services := "nfcapd lw_nfcapd rsyslog lw_rsyslog"
 
-# completely build a fresh image from download to grabbing the sysupgrade
-fullbuild: fetch extract buildimage grabupgrade checksum
-
 list:
     @echo "{{ helpintro }}"
     @just --list
+
+# Run build recipes for a particular target board.
+buildfor FOR *commands:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    if [[ "{{FOR}}" == "x86_64" ]]; then
+        just {{commands}}
+    elif [[ "{{FOR}}" == "rpi-4" ]]; then
+        echo "TARGET=bcm27xx BOARD=bcm2711 PROFILE=rpi-4"
+        just TARGET=bcm27xx BOARD=bcm2711 PROFILE=rpi-4 {{commands}}
+    elif [[ "{{FOR}}" == "rpi-3" ]]; then
+        echo "TARGET=bcm27xx BOARD=bcm2710 PROFILE=rpi-3"
+        just TARGET=bcm27xx BOARD=bcm2710 PROFILE=rpi-3 {{commands}}
+    elif [[ "{{FOR}}" == "rpi-2" ]]; then
+        echo "TARGET=bcm27xx BOARD=bcm2709 PROFILE=rpi-2"
+        just TARGET=bcm27xx BOARD=bcm2709 PROFILE=rpi-2 {{commands}}
+    elif [[ "{{FOR}}" == "rpi" ]]; then
+        echo "TARGET=bcm27xx BOARD=bcm2708 PROFILE=rpi"
+        just TARGET=bcm27xx BOARD=bcm2708 PROFILE=rpi {{commands}}
+    else
+        echo "ERROR: unknown/unsupported board {{FOR}}"
+        exit 1
+    fi
+
+# completely build a fresh image from download to grabbing the sysupgrade
+fullbuild: fetch extract buildimage grabupgrade checksum
 
 # remove all imagebuilder folders and downloads
 cleanall:
@@ -80,7 +113,7 @@ extract: verify
 
 # build the image
 buildimage:
-    test -d {{imagebuilder}} || just extract
+    test -d {{imagebuilder}} || just TARGET={{TARGET}} BOARD={{BOARD}} PROFILE={{PROFILE}} extract
     cd {{imagebuilder}} && \
     make image PROFILE="{{PROFILE}}" EXTRA_IMAGE_NAME="{{extra_name}}" PACKAGES="{{packages}}" FILES="../{{filedir}}" DISABLED_SERVICES="{{disabled_services}}"
 
