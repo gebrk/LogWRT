@@ -1,5 +1,5 @@
-openwrt_version := "22.03.5"
-sigfile := "usign_2203"
+openwrt_version := "24.10.0-rc4"
+sigfile := "usign_2410"
 TARGET := "x86"
 BOARD := "64"
 PROFILE := "generic"
@@ -96,7 +96,7 @@ fetch:
     # Skip if imagebuilder download present
     test -f {{imagebuilder}}.tar.xz && echo "Imagebuilder download exists, delete or run just clean  to redownload." && exit 0
 
-    curl -Of {{downloadbase}}/{{imagebuilder}}.tar.xz
+    curl -Of {{downloadbase}}/{{imagebuilder}}.tar.zst
     curl -f --remote-name-all {{downloadbase}}/sha256sums{,.sig}
 
 # check the downloaded files with signify and sha256sums
@@ -107,7 +107,7 @@ verify: fetch
 # extract the imagebuilder, removing any existing directories
 extract: verify
     rm -rf {{imagebuilder}}/
-    tar xf {{imagebuilder}}.tar.xz
+    tar xf {{imagebuilder}}.tar.zst
 
 # build the image
 buildimage:
