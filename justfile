@@ -94,7 +94,7 @@ fetch:
     #!/usr/bin/env bash
     set -euxo pipefail
     # Skip if imagebuilder download present
-    test -f {{imagebuilder}}.tar.xz && echo "Imagebuilder download exists, delete or run just clean  to redownload." && exit 0
+    test -f {{imagebuilder}}.tar.zst && echo "Imagebuilder download exists, delete or run just clean  to redownload." && exit 0
 
     curl -Of {{downloadbase}}/{{imagebuilder}}.tar.zst
     curl -f --remote-name-all {{downloadbase}}/sha256sums{,.sig}
