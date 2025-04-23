@@ -4,5 +4,8 @@ sha256sums*
 *.img
 *.img.gz
 
+# Build directory - used with build container
+build/
+
 # Exernal storage image file used for emulation
 extradrive.img

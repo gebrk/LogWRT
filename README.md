@@ -27,6 +27,21 @@ LogWRT is not a log analysis platform - but could be a "good enough" solution to
 5. Boot the new LogWRT box, by default it will request an IP address using DHCP.
 6. Connect by serial console, webui, or ssh. Login as root and set a new root passphrase and configure.
 
+### Containerised build
+
+Still a work in progress, but the supplied `Containerfile` can be used to create a Fedora build environment; this is useful for building on OSs which are not officially supported by imagebuilder or which lack the other utilities we use (signify, just).
+
+1. Build the container locally
+    ```
+    $ podman build -t logwrt-build .
+    ```
+2. Use the container to build LogWRT, bind mounting the required files and folders into the conatiner. TODO: provide a script
+    ```
+    podman run --rm -it -v ./build:/build -v ./justfile:/build/justfile:ro -v ./files:/build/files:ro -v ./usign_2410:/build/usign_2410 localhost/logwrt-build:latest buildimage
+    ```
+
+The build files are not baked into the container image to allow for changes to be made easily.
+
 ### Image files
 Imagebuilder builds a few varients of the base image by default. Both architectures have `-ext4` or `-squashfs` varients - the squashfs version should support factory resets, but apart from that there should be no difference for LogWRT use.
 
