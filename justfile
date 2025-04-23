@@ -113,7 +113,7 @@ extract: verify
 buildimage:
     test -d {{imagebuilder}} || just TARGET={{TARGET}} BOARD={{BOARD}} PROFILE={{PROFILE}} extract
     cd {{imagebuilder}} && \
-    make image PROFILE="{{PROFILE}}" EXTRA_IMAGE_NAME="{{extra_name}}" PACKAGES="{{packages}}" FILES="../{{filedir}}" DISABLED_SERVICES="{{disabled_services}}"
+    make image PROFILE="{{PROFILE}}" ROOTFS_PARTSIZE="200" EXTRA_IMAGE_NAME="{{extra_name}}" PACKAGES="{{packages}}" FILES="../{{filedir}}" DISABLED_SERVICES="{{disabled_services}}"
 
 # output a package list with our additional packages included
 manifest:

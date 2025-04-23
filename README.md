@@ -78,3 +78,4 @@ Logfile retention is configured in the Logrotate config file `/etc/logrotate.d/r
 * Logrotate installed and configured to run from cron and rotate the remote syslogs.
 * WAN interface and zone removed from default networking config.
 * A selection of helpful shell utilities installed by default, including bash as the root shell.
+* The root partion is expanded to 200MB to allow for future growth.
