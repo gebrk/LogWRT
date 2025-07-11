@@ -1,4 +1,4 @@
-openwrt_version := "24.10.1"
+openwrt_version := "24.10.2"
 sigfile := "usign_2410"
 TARGET := "x86"
 BOARD := "64"
